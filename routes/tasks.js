@@ -9,10 +9,15 @@ router.get('/', (req, res) => {
     data: tasks
   });
 });
-// Get task by ID
+// Get task by ID with validation
 router.get("/:id", (req, res) => {
   const tasks = req.app.locals.tasks;
-  const id = parseInt(req.params.id);
+  const id = Number(req.params.id);
+
+  // Validate ID format (must be a number)
+  if (isNaN(id) || id <= 0) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
 
   const task = tasks.find((t) => t.id === id);
 
@@ -22,6 +27,7 @@ router.get("/:id", (req, res) => {
 
   res.json(task);
 });
+
 
 // POST /tasks - Create a new task
 router.post('/', (req, res) => {
